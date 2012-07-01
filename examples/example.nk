@@ -1,0 +1,439 @@
+#! /Applications/Nuke6.3v2/Nuke6.3v2.app/Contents/MacOS/Nuke6.3v2 -nx
+version 6.3 v2
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="22" w="1680" h="1024" screen="0">
+        <splitter orientation="1">
+            <split size="1062"/>
+            <splitter orientation="1">
+                <split size="40"/>
+                <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                    <page id="Toolbar.1"/>
+                </dock>
+                <split size="1018"/>
+                <splitter orientation="2">
+                    <split size="608"/>
+                    <splitter orientation="1">
+                        <split size="1018"/>
+                        <dock id="" activePageId="Viewer.1">
+                            <page id="Viewer.1"/>
+                        </dock>
+                    </splitter>
+                    <split size="390"/>
+                    <dock id="" activePageId="DAG.1">
+                        <page id="DAG.1"/>
+                        <page id="Curve Editor.1"/>
+                        <page id="DopeSheet.1"/>
+                        <page id="DAG.2"/>
+                    </dock>
+                </splitter>
+            </splitter>
+            <split size="614"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name /Users/simon/Desktop/nuk/test2.nk
+ format "1920 1080 0 0 1920 1080 1 HD"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ views {
+  {left ""}
+  {right ""}
+ }
+}
+BackdropNode {
+ inputs 0
+ name BackdropNode4
+ tile_color 0x8e8e3800
+ label "Nuke parallel stereo  camera"
+ note_font_size 42
+ xpos -236
+ ypos -577
+ bdwidth 835
+ bdheight 641
+}
+Grade {
+ inputs 0
+ name Grade3
+ xpos -14
+ ypos -70
+}
+IDistort {
+ inputs 0
+ name IDistort1
+ xpos -43
+ ypos -10
+}
+s3d_disparityDistort {
+ inputs 0
+ name s3d_disparityDistort2
+ xpos 16
+ ypos -157
+}
+Group {
+ name Group3
+ help "This tool will distort source Image based on disparity values.\nPrimary utilization of this tool is - applying mask from one stereo view to another.\n\nInputs:\n    Image\nimage you want to distort.\n    Disparity\nimage, that contain \"Disparity\" data channel.\n"
+ note_font Verdana
+ xpos 16
+ ypos -124
+ mapsize {0.15 0.15}
+}
+ Input {
+  inputs 0
+  name Disparity
+  xpos -310
+  ypos 225
+  number 1
+ }
+ Input {
+  inputs 0
+  name Image
+  xpos -178
+  ypos 153
+ }
+ Copy {
+  inputs 2
+  from0 disparityL.x
+  to0 disparityL.x
+  from1 disparityL.y
+  to1 disparityL.y
+  name s3d_copyDisparityFromSource
+  xpos -178
+  ypos 213
+ }
+ IDistort {
+  uv disparity
+  uv_scale {(default {{direction i}} right {{direction==0?1:0 i}})}
+  name s3d_disparityDistort_math
+  selected true
+  xpos -68
+  ypos 219
+  addUserKnob {20 User}
+  addUserKnob {4 direction l "Distortion direction" M {"Left to Right" "Right to Left"}}
+ }
+ Output {
+  name Output1
+  xpos -68
+  ypos 319
+ }
+end_group
+OneView {
+ inputs 0
+ name OneView2
+ xpos 648
+ ypos -174
+}
+Axis2 {
+ inputs 0
+ translate {-10.54111099 2.84642744 18.75457191}
+ rotate {-5.88633549 -29.57873526 12.32968588}
+ name CenterCam1
+ tile_color 0xfffbfbff
+ label "used for scale, rotate, \ntranslate and setup \ninteraxial value"
+ note_font_size 15.2
+ xpos -103
+ ypos -222
+ addUserKnob {20 User}
+ addUserKnob {7 interaxial}
+ interaxial 0.3
+}
+Camera2 {
+ translate {(default {{CenterCam1.interaxial i} {0 i} {0 i}} left {{-CenterCam1.interaxial i} {0 i} {0 i}})}
+ rotate {{0 i} {0 i} {0 i}}
+ scaling {{1 i} {1 i} {1 i}}
+ uniform_scale {{1 i}}
+ focal 73
+ name camera2
+ label "parallel camera\ni lock here all transform attributes\nand put expression on X translation\nfor left\\right cameras"
+ xpos 112
+ ypos -260
+ addUserKnob {20 User}
+ addUserKnob {6 parallel l "parallel stereo mode" +STARTLINE}
+ addUserKnob {7 interaxial}
+ interaxial 0.1
+ addUserKnob {7 zeroParallax l "zeroParallax distance"}
+ zeroParallax 6
+}
+set N2060b5b0 [stack 0]
+push $N2060b5b0
+CheckerBoard2 {
+ inputs 0
+ name CheckerBoard2
+ xpos -138
+ ypos -497
+}
+set N206189c0 [stack 0]
+Cylinder {
+ translate {3.539999962 0.9599999785 -6.900000095}
+ scaling {1 4 1}
+ uniform_scale 0.42
+ name Cylinder2
+ xpos 69
+ ypos -435
+}
+push 0
+push $N206189c0
+Grade {
+ white 0.49
+ name Grade1
+ xpos -33
+ ypos -396
+}
+Card2 {
+ translate {16.49999809 0.7999987006 -33.6999321}
+ rotate {0 -14.43197457 0}
+ uniform_scale 30
+ control_points {3 3 3 6 
+
+1 {-0.5 -0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0 0 0} 
+1 {0 -0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0.5 0 0} 
+1 {0.5 -0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {1 0 0} 
+1 {-0.5 0 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0 0.5 0} 
+1 {0 0 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0.5 0.5 0} 
+1 {0.5 0 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {1 0.5 0} 
+1 {-0.5 0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0 1 0} 
+1 {0 0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0.5 1 0} 
+1 {0.5 0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {1 1 0} }
+ name Card1
+ xpos 43
+ ypos -350
+}
+Scene {
+ inputs 3
+ name Scene2
+ xpos 139
+ ypos -342
+}
+push 0
+ScanlineRender {
+ inputs 3
+ name ScanlineRender2
+ xpos 316
+ ypos -303
+}
+Blur {
+ size 0.1
+ name Blur1
+ xpos 316
+ ypos -279
+}
+set N31c593e0 [stack 0]
+s3d_disparityFromZ {
+ inputs 2
+ name s3d_disparityFromZ1
+ note_font Verdana
+ xpos 309
+ ypos -232
+ invertedZ true
+ zIsDistance false
+}
+set N206a58a0 [stack 0]
+Shuffle {
+ in disparityR
+ green black
+ blue black
+ alpha black
+ name Shuffle1
+ xpos 598
+ ypos -114
+}
+Grade {
+ blackpoint 122
+ whitepoint -11
+ white 0.36
+ gamma 0.73
+ black_clamp false
+ name Grade5
+ xpos 598
+ ypos -79
+}
+push $N206a58a0
+OneView {
+ name OneView1
+ xpos 596
+ ypos -291
+}
+RotoPaint {
+ inputs 0
+ curves {AnimTree: "" {
+ Version: 1.2
+ Flag: 0
+ RootNode: 1
+ Node: {
+  NodeName: "Root" {
+   Flag: 512
+   NodeType: 1
+   Transform: 0 0 S 0 0 S 0 0 S 0 0 S 0 1 S 0 1 S 0 0 S 0 320 S 0 240 
+   NumOfAttributes: 11
+   "vis" S 0 1 "opc" S 0 1 "mbo" S 0 1 "mb" S 0 1 "mbs" S 0 0.5 "fo" S 0 1 "fx" S 0 0 "fy" S 0 0 "ff" S 0 1 "ft" S 0 0 "pt" S 0 0 
+  }
+  NumOfChildren: 1
+  Node: {
+   NodeName: "Bezier1" {
+    Flag: 576
+    NodeType: 3
+    CurveGroup: "" {
+     Transform: 0 0 S 1 1 0 S 1 1 0 S 1 1 0 S 1 1 1 S 1 1 1 S 1 1 0 S 1 1 229.55 S 1 1 323.05 
+     Flag: 0
+     NumOfCubicCurves: 2
+     CubicCurve: "" {
+      Type: 0 Flag: 8192 Dim: 2
+      NumOfPoints: 15
+      0 S 1 1 1.40001 S 1 1 -0.799988 0 0 S 1 1 993.892 S 1 1 1184.48 0 0 S 1 1 -1.40001 S 1 1 0.799988 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 1154.5 S 1 1 1179 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 0.199997 S 1 1 0.600006 0 0 S 1 1 995 S 1 1 435.1 0 0 S 1 1 -0.104004 S 1 1 -0.312012 0 0 S 1 1 41.7411 S 1 1 -9.50278 0 0 S 1 1 911.5 S 1 1 446 0 0 S 1 1 -38.5303 S 1 1 8.77176 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 836.092 S 1 1 470.285 0 0 S 1 1 0 S 1 1 0 0 
+     }
+     CubicCurve: "" {
+      Type: 0 Flag: 8192 Dim: 2
+      NumOfPoints: 15
+      0 S 1 1 1.40001 S 1 1 -0.799988 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 -1.40001 S 1 1 0.799988 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 0.200012 S 1 1 0.600006 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 -0.104004 S 1 1 -0.312012 0 0 S 1 1 41.7411 S 1 1 -9.50278 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 -38.5303 S 1 1 8.77176 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 0 S 1 1 0 0 0 S 1 1 0 S 1 1 0 0 
+     }
+     NumOfAttributes: 45
+     "vis" S 0 1 "r" S 0 1 "g" S 0 1 "b" S 0 1 "a" S 0 1 "ro" S 0 0 "go" S 0 0 "bo" S 0 0 "ao" S 0 0 "opc" S 0 1 "bm" S 0 0 "inv" S 0 0 "mbo" S 0 0 "mb" S 0 1 "mbs" S 0 0.5 "mbsot" S 0 0 "mbso" S 0 0 "fo" S 0 1 "fx" S 0 0 "fy" S 0 0 "ff" S 0 1 "ft" S 0 0 "src" S 0 0 "stx" S 0 0 "sty" S 0 0 "str" S 0 0 "sr" S 0 0 "ssx" S 0 1 "ssy" S 0 1 "ss" S 0 0 "spx" S 0 320 "spy" S 0 240 "stot" S 0 0 "sto" S 0 0 "sv" S 0 0 "sf" S 0 1 "sb" S 0 1 "nv" S 0 2 "view1" S 0 1 "view2" S 0 2 "ltn" S 0 1 "ltm" S 0 1 "ltt" S 0 0 "tt" S 0 4 "pt" S 0 0 
+    }
+   }
+   NumOfChildren: 0
+  }
+ }
+}
+}
+ toolbox {selectAll {
+  { selectAll ssx 1 ssy 1 sf 1 }
+  { createBezier ssx 1 ssy 1 sf 1 sb 1 tt 4 }
+  { createBSpline ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle ssx 1 ssy 1 sf 1 sb 1 }
+  { brush ssx 1 ssy 1 sf 1 sb 1 }
+  { eraser src 2 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+ toolbar_brush_hardness 0.200000003
+ toolbar_lifetime_type all
+ toolbar_source_transform_scale {1 1}
+ toolbar_source_transform_center {320 240}
+ colorOverlay 0
+ lifetime_type "all frames"
+ motionblur_shutter_offset_type centred
+ source_black_outside true
+ createNewTrack {{-1} "-1\t(none)\t-1" "1000\tNew Track Layer\t1000"}
+ name RotoPaint1
+ xpos 613
+ ypos -238
+}
+push $N31c593e0
+push $N206a58a0
+push $N206a58a0
+OneView {
+ name OneView3
+ xpos 470
+ ypos -231
+}
+set N32f4bd40 [stack 0]
+Dot {
+ name Dot2
+ xpos 583
+ ypos -209
+}
+set N2dbf7580 [stack 0]
+s3d_disparityDistort {
+ inputs 2
+ name s3d_disparityDistort1
+ xpos 156
+ ypos -113
+}
+set N206bd2a0 [stack 0]
+push $N32f4bd40
+push $N2dbf7580
+Copy {
+ inputs 2
+ from0 -disparityR.x
+ to0 -disparityR.x
+ from1 -disparityR.y
+ to1 -disparityR.y
+ channels disparity
+ name s3d_copyDisparityFromSource
+ xpos 453
+ ypos -132
+}
+IForwardDistort {
+ channels rgba
+ disparity disparityR.x
+ disparity_scale {(default {1} left {0})}
+ disparity_near 0.73
+ disparity_limit {0 170}
+ name IForwardDistort1
+ xpos 463
+ ypos -87
+}
+set N206f5fb0 [stack 0]
+ContactSheet {
+ inputs 2
+ width 1024
+ height 288
+ rows 1
+ columns 2
+ name ContactSheet1
+ xpos 456
+ ypos 17
+}
+Write {
+ file /Users/simon/Desktop/nuk/DisparityDistort4000.jpg
+ file_type jpeg
+ _jpeg_quality 1
+ checkHashOnRead false
+ version 1
+ name Write1
+ selected true
+ xpos 456
+ ypos 41
+}
+push $N206f5fb0
+push $N206a58a0
+Grade {
+ inputs 1+1
+ white 0.18
+ name Grade2
+ xpos 335
+ ypos -66
+}
+push $N206bd2a0
+push $N206a58a0
+Grade {
+ inputs 1+1
+ white 0.18
+ name Grade4
+ xpos 229
+ ypos -57
+}
+ContactSheet {
+ inputs 2
+ width 1024
+ height 288
+ rows 1
+ columns 2
+ name ContactSheet2
+ xpos 311
+ ypos 20
+}
+Viewer {
+ inputs 3
+ frame_increment 9
+ input_number 1
+ input_process false
+ translate {0.2829999924 0.3540000021}
+ rotate 90
+ name Viewer2
+ xpos 52
+ ypos 173
+ hide_input true
+}
