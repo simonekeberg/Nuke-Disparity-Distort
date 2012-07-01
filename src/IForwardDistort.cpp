@@ -1,17 +1,10 @@
 // IForwardDistort.C
-// Copyright (c) 2009 The Foundry Visionmongers Ltd.  All Rights Reserved.
 
-/*! \class IForwardDistort IForwardDistort.C
 
-   This class implements a plug-in to the DDImage library that warps one image
-   based on an image of u, v vector coordinates. Each pixel in the destination
-   image has a vector [u, v] associated with it. This vector tells the image
-   where to pull it's pixel from the input image.
+/*! \class IForwardDistort
 
-   This class started out as the VectorBlur class.
+  Based on IDistort.cpp from Foundry Nuke NDK
 
-   \author Doug Roble
-   \date May 2nd, 2001  File creation.
  */
 
 // Standard plug-in include files.
