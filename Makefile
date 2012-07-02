@@ -6,12 +6,14 @@ LINKFLAGS ?= -L$(NDKDIR)
 LIBS ?= -lDDImage
 LINKFLAGS += -shared
 
-all: IForwardDistort.dylib
+
+all: IForwardDistort.so
 
 .PRECIOUS : %.os
 %.os: src/%.cpp
 	$(MYCXX) $(CXXFLAGS) -o build/$(@) $<
-%.dylib: %.os
-	$(LINK) $(LINKFLAGS) $(LIBS) $(FRAMEWORKS) -o build/$(@) build/$<
+%.so: %.os
+	$(LINK) $(LINKFLAGS) $(LIBS) -o build/$(@) build/$<
 clean:
 	rm -rf build/*.os build/IForwardDistort.dylib
+
